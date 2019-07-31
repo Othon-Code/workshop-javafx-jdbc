@@ -1,18 +1,27 @@
 package gui;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import application.Main;
+import gui.util.Alerts;
+import gui.util.Utils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.entidades.Departamento;
 import model.services.DepartmentService;
@@ -36,9 +45,9 @@ public class DepartamentoListController implements Initializable {
 	private ObservableList<Departamento> obsList;
 
 	@FXML
-	public void onBtNovoAcction() {// implementação do botao btNovo
-		System.out.println("onBtNovoAction");
-
+	public void onBtNovoAcction(ActionEvent event) {// implementação do botao btNovo
+		Stage parentStage = Utils.stageCorrente(event);
+		createDialogForm("/gui/DepartmentForm.fxml", parentStage);
 	}
 
 	public void setDepartamentService(DepartmentService service) {
@@ -69,6 +78,24 @@ public class DepartamentoListController implements Initializable {
 		obsList = FXCollections.observableArrayList(list);
 		tableviewDept.setItems(obsList);
 		
+	}
+	private void createDialogForm(String absoluteNome, Stage parentStage) {
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteNome));
+			Pane pane = loader.load();
+			
+			Stage dialogStage = new Stage();
+			dialogStage.setTitle("Entre com os dados do Departamento");
+			dialogStage.setScene(new Scene(pane));
+			dialogStage.setResizable(false);
+			dialogStage.initOwner(parentStage);
+			dialogStage.initModality(Modality.WINDOW_MODAL);
+			dialogStage.showAndWait();
+			
+		}
+		catch(IOException e) {
+			Alerts.showAlert("IO Exception", "ERRO Loading View", e.getMessage(), AlertType.ERROR);
+		}
 	}
 
 }
