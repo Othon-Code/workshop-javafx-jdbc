@@ -13,7 +13,6 @@ import db.DbException;
 import db.DbIntegrityException;
 import model.dao.DepartmentDao;
 import model.entidades.Departamento;
-import model.entities.Department;
 
 public class DepartmentDaoJDBC implements DepartmentDao {
 
@@ -24,7 +23,7 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 	}
 	
 	@Override
-	public Department findById(Integer id) {
+	public Departamento findById(Integer id) {
 		PreparedStatement st = null;
 		ResultSet rs = null;
 		try {
@@ -33,7 +32,7 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 			st.setInt(1, id);
 			rs = st.executeQuery();
 			if (rs.next()) {
-				Department obj = new Department();
+				Departamento obj = new Departamento();
 				obj.setId(rs.getInt("Id"));
 				obj.setName(rs.getString("Name"));
 				return obj;
@@ -78,7 +77,7 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 	}
 
 	@Override
-	public void insert(Department obj) {
+	public void insert(Departamento obj) {
 		PreparedStatement st = null;
 		try {
 			st = conn.prepareStatement(
@@ -88,7 +87,7 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 				"(?)", 
 				Statement.RETURN_GENERATED_KEYS);
 
-			st.setString(1, obj.getName());
+			st.setString(1, obj.getNome());
 
 			int rowsAffected = st.executeUpdate();
 			
@@ -112,7 +111,7 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 	}
 
 	@Override
-	public void update(Department obj) {
+	public void update(Departamento obj) {
 		PreparedStatement st = null;
 		try {
 			st = conn.prepareStatement(
@@ -120,7 +119,7 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 				"SET Name = ? " +
 				"WHERE Id = ?");
 
-			st.setString(1, obj.getName());
+			st.setString(1, obj.getNome());
 			st.setInt(2, obj.getId());
 
 			st.executeUpdate();
